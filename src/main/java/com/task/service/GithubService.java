@@ -47,7 +47,6 @@ public class GithubService {
         List<String> decodedContents = new ArrayList<>();
 
         List<Member> repoMembers = getRepoMembers(repo);
-//        repoMembers = repoMembers.subList(0, 2);
 
         Map<String, List<Repository>> userRepositoryMap = repoMembers.stream()
                 .collect(Collectors.toMap(Member::login, user -> getUserRepos(user.login())));
