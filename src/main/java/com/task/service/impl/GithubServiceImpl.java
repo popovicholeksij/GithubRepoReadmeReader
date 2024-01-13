@@ -1,9 +1,11 @@
-package com.task.service;
+package com.task.service.impl;
 
 import com.task.client.GithubApiClient;
 import com.task.dto.Member;
 import com.task.dto.Readme;
 import com.task.dto.Repository;
+import com.task.dto.WordQuantity;
+import com.task.service.RepositoryService;
 import jakarta.inject.Singleton;
 
 import java.nio.charset.StandardCharsets;
@@ -11,18 +13,19 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Singleton
-public class GithubService {
+public class GithubServiceImpl implements RepositoryService {
 
     private final GithubApiClient client;
     private final int REPO_MEMBERS_PER_PAGE = 100;
     private final int MIN_WORD_LENGTH = 4;
     private final String WORDS_REGEX = "[^a-zA-Z]+";
 
-    public GithubService(GithubApiClient client) {
+    public GithubServiceImpl(GithubApiClient client) {
         this.client = client;
     }
 
-    public Map<String, Integer> findPopularWords(String repo, int limit) {
+    @Override
+    public List<WordQuantity> findPopularWords(String repo, int limit) {
         List<String> allReadmeContents = getAllReadmeContents(repo);
 
         List<String> words = allReadmeContents.stream()
@@ -40,13 +43,15 @@ public class GithubService {
         return wordFrequencyMap.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .limit(limit)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+                .map(a -> new WordQuantity(a.getKey(), a.getValue()))
+                .collect(Collectors.toList());
     }
 
     private List<String> getAllReadmeContents(String repo) {
         List<String> decodedContents = new ArrayList<>();
 
         List<Member> repoMembers = getRepoMembers(repo);
+        repoMembers = repoMembers.subList(0,1);
 
         Map<String, List<Repository>> userRepositoryMap = repoMembers.stream()
                 .collect(Collectors.toMap(Member::login, user -> getUserRepos(user.login())));
