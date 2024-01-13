@@ -2,7 +2,6 @@ package com.task.controller;
 
 import com.task.dto.WordQuantity;
 import com.task.service.impl.GithubServiceImpl;
-import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
@@ -21,7 +20,7 @@ public class MainController {
     }
 
     @Get("/{value}")
-    HttpResponse<List<WordQuantity>> fetchMembers(@Nullable String value, @QueryValue(value= "limit", defaultValue = "3") int limit) {
+    HttpResponse<List<WordQuantity>> fetchMembers(String value, @QueryValue(value = "limit", defaultValue = "3") int limit) {
         return HttpResponse.ok(service.findPopularWords(value, limit));
     }
 }
