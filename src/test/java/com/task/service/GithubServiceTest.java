@@ -5,6 +5,7 @@ import com.task.dto.Member;
 import com.task.dto.Readme;
 import com.task.dto.Repository;
 import com.task.dto.WordQuantity;
+import com.task.exception.GithubServiceException;
 import com.task.service.impl.GithubServiceImpl;
 import io.micronaut.core.io.ResourceLoader;
 import io.micronaut.test.annotation.MockBean;
@@ -74,7 +75,7 @@ class GithubServiceTest {
     @Test()
     void findPopularWordsUsersNotFound() {
         when(githubApiClient.getRepoMembers(eq(REPO), anyInt())).thenReturn(Optional.empty());
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> service.findPopularWords(REPO, LIMIT));
+        RuntimeException exception = assertThrows(GithubServiceException.class, () -> service.findPopularWords(REPO, LIMIT));
         assertEquals(exception.getMessage(), "Users not found");
     }
 
@@ -83,7 +84,7 @@ class GithubServiceTest {
         when(githubApiClient.getRepoMembers(eq(REPO), anyInt()))
                 .thenReturn(Optional.of(List.of(new Member("user1"))));
         when(githubApiClient.getUserRepos(anyString())).thenReturn(Optional.empty());
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> service.findPopularWords(REPO, LIMIT));
+        RuntimeException exception = assertThrows(GithubServiceException.class, () -> service.findPopularWords(REPO, LIMIT));
         assertEquals(exception.getMessage(), "User repositories not found");
     }
 }

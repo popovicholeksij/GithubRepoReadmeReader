@@ -5,6 +5,7 @@ import com.task.dto.Member;
 import com.task.dto.Readme;
 import com.task.dto.Repository;
 import com.task.dto.WordQuantity;
+import com.task.exception.GithubServiceException;
 import com.task.service.RepositoryService;
 import jakarta.inject.Singleton;
 
@@ -51,7 +52,7 @@ public class GithubServiceImpl implements RepositoryService {
         List<String> decodedContents = new ArrayList<>();
 
         List<Member> repoMembers = getRepoMembers(repo);
-        repoMembers = repoMembers.subList(0,1);
+        repoMembers = repoMembers.subList(0, 1);
 
         Map<String, List<Repository>> userRepositoryMap = repoMembers.stream()
                 .collect(Collectors.toMap(Member::login, user -> getUserRepos(user.login())));
@@ -69,12 +70,12 @@ public class GithubServiceImpl implements RepositoryService {
 
     private List<Member> getRepoMembers(String repo) {
         return client.getRepoMembers(repo, REPO_MEMBERS_PER_PAGE)
-                .orElseThrow(() -> new RuntimeException("Users not found"));
+                .orElseThrow(() -> new GithubServiceException("Users not found"));
     }
 
     private List<Repository> getUserRepos(String login) {
         return client.getUserRepos(login)
-                .orElseThrow(() -> new RuntimeException("User repositories not found"));
+                .orElseThrow(() -> new GithubServiceException("User repositories not found"));
     }
 
     private String getDecodedReadmeContent(String login, String repo) {
