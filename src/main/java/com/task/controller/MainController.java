@@ -5,6 +5,7 @@ import com.task.service.impl.GithubServiceImpl;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.QueryValue;
 
 import java.util.List;
@@ -20,7 +21,8 @@ public class MainController {
     }
 
     @Get("/{value}")
-    HttpResponse<List<WordQuantity>> fetchMembers(String value, @QueryValue(value = "limit", defaultValue = "3") int limit) {
+    HttpResponse<List<WordQuantity>> fetchMembers(@PathVariable String value,
+                                                  @QueryValue(value = "limit", defaultValue = "3") int limit) {
         return HttpResponse.ok(service.findPopularWords(value, limit));
     }
 }
