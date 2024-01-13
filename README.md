@@ -15,7 +15,14 @@ How to start docker container:
 `docker run -p 8080:8080 github-repo-readme-reader`
 
 Endpoint call example:
-GET http://localhost:8080/{repositoryName}?limit=5
+
+REQUEST: GET http://localhost:8080/{repositoryName}?limit=5
+
+RESPONSE:
+
+`[{"word":"https","quantity":373},{"word":"github","quantity":167},{"word":"build","quantity":160}]`
+
+
 
 
 
